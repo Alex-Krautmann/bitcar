@@ -10,7 +10,7 @@ module.exports =  {
 
 function getConfiguredRepos(config) {
     const bitbucketConfig = _.find(config.drivers, { type: 'bitbucket-server' });
-    if (bitbucketConfig && bitbucketConfig.host) {
+    if (bitbucketConfig && bitbucketConfig.host && bitbucketConfig.protocol) {
         return inquirer.prompt([
             {
                 type: 'input',
@@ -28,7 +28,7 @@ function getConfiguredRepos(config) {
                 password: answers.password
             };
             return axios.request({
-                url: `https://${bitbucketConfig.host}/rest/api/1.0/projects/?limit=10000`,
+                url: `${bitbucketConfig.protocol}${bitbucketConfig.host}/rest/api/1.0/projects/?limit=10000`,
                 auth
             }).then((res) => {
                 const projects = _.map(res.data.values, (v) => v.key.toLowerCase());
@@ -36,7 +36,7 @@ function getConfiguredRepos(config) {
             }).then((projects) => {
                 return Promise.reduce(projects, (acc, project) => {
                     return axios.request({
-                        url: `https://${bitbucketConfig.host}/rest/api/1.0/projects/${project}/repos?limit=10000`,
+                        url: `${bitbucketConfig.protocol}${bitbucketConfig.host}/rest/api/1.0/projects/${project}/repos?limit=10000`,
                         auth
                     }).then((res) => {
                         const repos = _.map(res.data.values, (v) => {

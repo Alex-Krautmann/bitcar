@@ -5,8 +5,17 @@ const path = require('path');
 const inquirer = require('inquirer');
 const os = require('os');
 const chalk = require('chalk');
+const _ = require('lodash');
 
 module.exports = setup;
+
+function driverConfigFactory(options) {
+    if ( !options.type || !options.host ) throw new Error('repo configs require properties type and host');
+    const matchedProtocol = /(https?:\/\/).*?/.exec(options.host)[0];
+    return _.assign({
+        protocol: matchedProtocol || 'https://'
+    }, options);
+}
 
 function setup() {
     return inquirer.prompt([
@@ -93,15 +102,19 @@ source $HOME/.bitcar/completions.sh
             };
 
             if (answers.drivers.indexOf('github') >= 0) {
-                let githubConfig = { type: 'github', host: 'github.com', accessToken: answers.githubAccessToken };
-                if (answers.githubUsernames) {
-                    githubConfig.usernames = answers.githubUsernames.split(',');
-                }
-                configContent.drivers.push(githubConfig);
+                configContent.drivers.push(driverConfigFactory({
+                    type: 'github',
+                    host: 'github.com',
+                    accessToken: answers.githubAccessToken,
+                    usernames: (_.isArray(answers.githubUsernames)) ? answers.githubUsernames.split(',') : []
+                }));
             }
 
             if (answers.drivers.indexOf('bitbucket-server') >= 0) {
-                configContent.drivers.push({ type: 'bitbucket-server', host: answers.bitbucketServerHost });
+                configContent.drivers.push(driverConfigFactory({
+                    type: 'bitbucket-server',
+                    host: answers.bitbucketServerHost
+                }));
             }
 
             const mkdirp = require('mkdirp');

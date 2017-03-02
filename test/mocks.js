@@ -50,11 +50,13 @@ exports.config = {
         {
             type: "github",
             host: "github.com",
+            protocol: 'https://',
             accessToken: "9eccdc79e394f713624486c0272f44fe67267b97"
         },
         {
             type: "bitbucket-server",
-            host: "git.cars.com"
+            host: "git.cars.com",
+            protocol: 'https://'
         }
     ]
 };
@@ -65,12 +67,14 @@ exports.configWithUsernames = {
         {
             type: "github",
             host: "github.com",
+            protocol: 'https://',
             accessToken: "9eccdc79e394f713624486c0272f44fe67267b97",
             usernames: [ 'google' ]
         },
         {
             type: "bitbucket-server",
-            host: "git.cars.com"
+            host: "git.cars.com",
+            protocol: 'https://'
         }
     ]
 };
@@ -80,7 +84,8 @@ exports.configWithoutGithub = {
     drivers: [
         {
             type: "bitbucket-server",
-            host: "git.cars.com"
+            host: "git.cars.com",
+            protocol: 'https://'
         }
     ]
 };
@@ -91,6 +96,7 @@ exports.configWithoutBitbucketServer = {
         {
             type: "github",
             host: "github.com",
+            protocol: 'https://',
             accessToken: "9eccdc79e394f713624486c0272f44fe67267b97"
         }
     ]
